@@ -4,7 +4,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:barcode/barcode.dart';
 
-import '../../core/local_storage/storage/user_data_service.dart';
+import '../../core/local_storage/services/user_data_service.dart';
 import 'receipt_helpers.dart';
 
 Future<void> printReceipt(ReceiptModel receipt, String bankName) async {

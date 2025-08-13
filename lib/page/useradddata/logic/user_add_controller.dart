@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/local_storage/storage/user_data_service.dart';
+import '../../../core/local_storage/services/user_data_service.dart';
 import '../../../core/splash/loading_dialog_widget.dart';
 import '../../Savefingerandbank/view/savefingerview.dart';
 
