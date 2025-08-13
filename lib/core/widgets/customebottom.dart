@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'appstyles.dart';
+import '../styles/appstyles.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton({

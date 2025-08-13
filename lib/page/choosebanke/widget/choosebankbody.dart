@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-
-import '../../../core/customebottom.dart';
-import '../../../core/customecard.dart';
+import '../../../core/constants.dart';
+import '../../../core/styles/appstyles.dart';
+import '../../../core/widgets/customebottom.dart';
 import '../../entermony/entermony.dart';
 import '../../home_page.dart';
 
 class Choosebankbody extends StatefulWidget {
   final bool firsttime;
-  final String amount; // <-- add this
+  final String amount;
 
   Choosebankbody({
     super.key,
@@ -35,10 +35,7 @@ class _ChoosebankbodyState extends State<Choosebankbody> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
-            'اختار البنك',
-            style: TextStyle(fontSize: 35),
-          ),
+          Text('اختار البنك', style: AppTextStyle.bold30),
           const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -102,54 +99,38 @@ class _ChoosebankbodyState extends State<Choosebankbody> {
             ),
           ),
           const SizedBox(height: 30),
-          widget.firsttime
-              ? CustomButton(
-                  text: 'حدد البنك',
-                  textColor: Colors.white,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PaymentScreen(),
+          CustomButton(
+            text: widget.firsttime ? 'حدد البنك' : 'طباعه وصل الدفع',
+            textColor: Colors.white,
+            onTap: () {
+              if (widget.firsttime) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PaymentScreen(),
+                  ),
+                );
+              } else {
+                if (selectedBank != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomePage(
+                        selectedBank: selectedBank!,
+                        amount: widget.amount,
                       ),
-                    );
-                  },
-                )
-              : CustomButton(
-                  text: 'طباعه وصل الدفع',
-                  textColor: Colors.white,
-                  onTap: () {
-                    if (selectedBank != null) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomePage(
-                            selectedBank: selectedBank!,
-                            amount: widget.amount,
-                          ),
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("يرجى اختيار البنك")),
-                      );
-                    }
-                  },
-                ),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("يرجى اختيار البنك")),
+                  );
+                }
+              }
+            },
+          )
         ],
       ),
     );
   }
 }
-
-final List<Map<String, String>> banks = [
-  {'image': 'assets/images/rajhi.png', 'name': 'الراجحي'},
-  {'image': 'assets/images/Alinma.png', 'name': 'الإنماء'},
-  {'image': 'assets/images/sab.png', 'name': 'ساب'},
-  {'image': 'assets/images/p2p.jpg', 'name': 'p2p'},
-  {'image': 'assets/images/jazera.png', 'name': 'الجزيرة'},
-  {'image': 'assets/images/stcbank.png', 'name': 'اس تي سي'},
-  {'image': 'assets/images/barq.png', 'name': 'برق'},
-  {'image': 'assets/images/D360.jpg', 'name': 'D360'},
-  {'image': 'assets/images/tekmo.png', 'name': 'تكمو'},
-];

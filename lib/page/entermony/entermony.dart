@@ -1,5 +1,7 @@
+import 'package:fingerprint_auth_example/core/styles/appstyles.dart';
 import 'package:flutter/material.dart';
 import '../../api/local_auth_api.dart';
+import '../../core/constants.dart';
 import '../choosebanke/view/choosebankview.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -13,31 +15,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
   String amount = "0.00";
   final TextEditingController nameController = TextEditingController();
 
-  final List<String> keys = [
-    '3',
-    '2',
-    '1',
-    '6',
-    '5',
-    '4',
-    '9',
-    '8',
-    '7',
-    'back',
-    '0',
-    '.',
-  ];
-
   void onKeyTap(String key) {
     setState(() {
       if (key == 'back') {
-        // Delete last character
         if (amount.isNotEmpty) {
           amount = amount.substring(0, amount.length - 1);
           if (amount.isEmpty) amount = "0";
         }
       } else {
-        // Append digit or dot
         if (amount == "0.00" || amount == "0") {
           amount = key == '.' ? "0." : key;
         } else {
@@ -60,20 +45,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Image.asset(
-                  //   'assets/images/rajhi.png', // Your logo
-                  //   height: 40,
-                  //   width: 40,
-                  // ),
                   const SizedBox(width: 8),
-                  const Text(
-                    'ادخل المبلغ',
-                    style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  Text('أدخل المبلغ',
+                      style: AppTextStyle.bold30.copyWith(color: Colors.blue)),
                 ],
               ),
               const SizedBox(height: 20),

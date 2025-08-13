@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:fingerprint_auth_example/page/useradddata/storage/helper.dart';
+import 'package:fingerprint_auth_example/core/local_storage/storage/helper.dart';
 import 'package:flutter/material.dart';
 
 // Import your secure storage helper - update the path as needed
