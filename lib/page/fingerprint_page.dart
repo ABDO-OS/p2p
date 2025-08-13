@@ -1,6 +1,6 @@
 import 'package:fingerprint_auth_example/api/local_auth_api.dart';
 import 'package:fingerprint_auth_example/main.dart';
-import 'package:fingerprint_auth_example/page/home_page.dart';
+import 'package:fingerprint_auth_example/page/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 
@@ -78,6 +78,7 @@ class FingerprintPage extends StatelessWidget {
                   builder: (context) => HomePage(
                         selectedBank: '',
                         amount: '',
+                        customerName: '',
                       )),
             );
           }

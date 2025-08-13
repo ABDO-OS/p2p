@@ -10,6 +10,8 @@ class ReceiptModel {
   final String amount;
   final String approvalCode;
   final bool fingerprintVerified;
+  final String customerName;
+  final String bankName;
 
   ReceiptModel({
     required this.date,
@@ -18,6 +20,8 @@ class ReceiptModel {
     required this.amount,
     required this.approvalCode,
     required this.fingerprintVerified,
+    required this.customerName,
+    required this.bankName,
   });
 
   Future<ReceiptModel?> getReceipt() async {
@@ -44,6 +48,8 @@ class ReceiptModel {
       amount: map['amount'],
       approvalCode: map['approvalCode'],
       fingerprintVerified: map['fingerprintVerified'],
+      customerName: '',
+      bankName: '',
     );
   }
 }

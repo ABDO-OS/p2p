@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../core/textfield.dart';
+import '../../../core/widgets/textfield.dart';
 
-/// A reusable form widget for user data input
 class UserFormWidget extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController nameController;
@@ -28,7 +27,6 @@ class UserFormWidget extends StatelessWidget {
       key: formKey,
       child: Column(
         children: [
-          // Title
           const Text(
             'ادخل بياناتك',
             style: TextStyle(
@@ -38,8 +36,6 @@ class UserFormWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-
-          // Security info container
           if (showSecurityInfo)
             Container(
               padding: const EdgeInsets.all(12),
@@ -62,10 +58,7 @@ class UserFormWidget extends StatelessWidget {
                 ],
               ),
             ),
-
           const SizedBox(height: 20),
-
-          // Name field
           Textfield(
             hinttext: "ادخل اسمك",
             controller: nameController,
@@ -73,8 +66,6 @@ class UserFormWidget extends StatelessWidget {
                 value == null || value.trim().isEmpty ? "الاسم مطلوب" : null,
           ),
           const SizedBox(height: 15),
-
-          // Email field
           Textfield(
             hinttext: "ادخل الايميل",
             controller: emailController,
@@ -88,8 +79,6 @@ class UserFormWidget extends StatelessWidget {
             },
           ),
           const SizedBox(height: 15),
-
-          // Phone field
           Textfield(
             hinttext: "ادخل رقمك",
             controller: phoneController,
@@ -98,8 +87,6 @@ class UserFormWidget extends StatelessWidget {
                 value == null || value.trim().isEmpty ? "الرقم مطلوب" : null,
           ),
           const SizedBox(height: 15),
-
-          // Address field
           Textfield(
             hinttext: "ادخل عنوانك",
             controller: addressController,
@@ -107,8 +94,6 @@ class UserFormWidget extends StatelessWidget {
                 value == null || value.trim().isEmpty ? "العنوان مطلوب" : null,
           ),
           const SizedBox(height: 15),
-
-          // Age field
           Textfield(
             hinttext: "ادخل عمرك",
             controller: ageController,

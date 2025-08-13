@@ -3,7 +3,7 @@ import '../../../core/constants.dart';
 import '../../../core/styles/appstyles.dart';
 import '../../../core/widgets/customebottom.dart';
 import '../../entermony/entermony.dart';
-import '../../home_page.dart';
+import '../../home/home_page.dart';
 
 class Choosebankbody extends StatefulWidget {
   final bool firsttime;
@@ -118,6 +118,7 @@ class _ChoosebankbodyState extends State<Choosebankbody> {
                       builder: (context) => HomePage(
                         selectedBank: selectedBank!,
                         amount: widget.amount,
+                        customerName: '',
                       ),
                     ),
                   );
