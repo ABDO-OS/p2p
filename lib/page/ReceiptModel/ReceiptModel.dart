@@ -37,6 +37,8 @@ class ReceiptModel {
       'amount': amount,
       'approvalCode': approvalCode,
       'fingerprintVerified': fingerprintVerified,
+      'customerName': customerName,
+      'bankName': bankName,
     };
   }
 
@@ -48,8 +50,8 @@ class ReceiptModel {
       amount: map['amount'],
       approvalCode: map['approvalCode'],
       fingerprintVerified: map['fingerprintVerified'],
-      customerName: '',
-      bankName: '',
+      customerName: map['customerName'],
+      bankName: map['bankName'],
     );
   }
 }

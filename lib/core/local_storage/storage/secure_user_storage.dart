@@ -39,22 +39,58 @@ class SecureUserStorage {
   }
 
   static Future<List<Map<String, String>>> getAllUsers() async {
-    String? usersJson =
-        await SecureStorageHelper.storage.read(key: _usersListKey);
-    if (usersJson == null || usersJson.isEmpty) return [];
-    List<dynamic> usersList = jsonDecode(usersJson);
-    return usersList.map((user) => Map<String, String>.from(user)).toList();
+    try {
+      print('SecureUserStorage: Reading users from secure storage...');
+      String? usersJson =
+          await SecureStorageHelper.storage.read(key: _usersListKey);
+      print('SecureUserStorage: Raw data from storage: $usersJson');
+
+      if (usersJson == null || usersJson.isEmpty) {
+        print('SecureUserStorage: No users data found, returning empty list');
+        return [];
+      }
+
+      List<dynamic> usersList = jsonDecode(usersJson);
+      print('SecureUserStorage: Parsed users list: $usersList');
+
+      List<Map<String, String>> result =
+          usersList.map((user) => Map<String, String>.from(user)).toList();
+      print('SecureUserStorage: Returning ${result.length} users');
+      return result;
+    } catch (e) {
+      print('SecureUserStorage: Error reading users: $e');
+      return [];
+    }
   }
 
   static Future<Map<String, String>?> getLastUser() async {
-    List<Map<String, String>> users = await getAllUsers();
-    if (users.isEmpty) return null;
-    return users.last;
+    try {
+      print('SecureUserStorage: Getting last user...');
+      List<Map<String, String>> users = await getAllUsers();
+      if (users.isEmpty) {
+        print('SecureUserStorage: No users found, returning null');
+        return null;
+      }
+
+      Map<String, String> lastUser = users.last;
+      print('SecureUserStorage: Last user: $lastUser');
+      return lastUser;
+    } catch (e) {
+      print('SecureUserStorage: Error getting last user: $e');
+      return null;
+    }
   }
 
   static Future<int> getUserCount() async {
-    List<Map<String, String>> users = await getAllUsers();
-    return users.length;
+    try {
+      print('SecureUserStorage: Getting user count...');
+      List<Map<String, String>> users = await getAllUsers();
+      print('SecureUserStorage: User count: ${users.length}');
+      return users.length;
+    } catch (e) {
+      print('SecureUserStorage: Error getting user count: $e');
+      return 0;
+    }
   }
 
   static Future<bool> deleteUser(String userId) async {

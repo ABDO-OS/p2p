@@ -1,8 +1,9 @@
 import 'package:fingerprint_auth_example/api/local_auth_api.dart';
 import 'package:fingerprint_auth_example/main.dart';
-import 'package:fingerprint_auth_example/page/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
+import '../core/routes/navigation_service.dart';
+import '../core/local_storage/services/user_data_service.dart';
 
 class FingerprintPage extends StatelessWidget {
   @override
@@ -73,13 +74,23 @@ class FingerprintPage extends StatelessWidget {
           print('Final result: $isAuthenticated');
 
           if (isAuthenticated) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                  builder: (context) => HomePage(
-                        selectedBank: '',
-                        amount: '',
-                        customerName: '',
-                      )),
+            // Load customer name before navigating
+            String customerName = 'العميل';
+            try {
+              final lastUser = await UserDataService.loadLastUserData();
+              if (lastUser != null && lastUser['name'] != null) {
+                customerName = lastUser['name']!;
+                print('FingerprintPage: Loaded customer name: $customerName');
+              }
+            } catch (e) {
+              print('FingerprintPage: Error loading customer name: $e');
+            }
+
+            // Use navigation service instead of direct Navigator
+            await NavigationService.replaceWithHome(
+              selectedBank: '',
+              amount: '',
+              customerName: customerName,
             );
           }
         },

@@ -2,7 +2,7 @@ import 'package:fingerprint_auth_example/core/styles/appstyles.dart';
 import 'package:flutter/material.dart';
 import '../../api/local_auth_api.dart';
 import '../../core/constants.dart';
-import '../choosebanke/view/choosebankview.dart';
+import '../../core/routes/navigation_service.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
@@ -129,12 +129,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     print('Final result: $isAuthenticated');
 
                     if (isAuthenticated) {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                            builder: (context) => Choosebankview(
-                                  firsttime: false,
-                                  amount: amount,
-                                )),
+                      // Use navigation service instead of direct Navigator
+                      await NavigationService.replaceWithChooseBank(
+                        firsttime: false,
+                        amount: amount,
                       );
                     }
                   },

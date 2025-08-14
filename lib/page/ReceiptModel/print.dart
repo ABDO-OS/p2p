@@ -14,8 +14,9 @@ Future<void> printReceipt(ReceiptModel receipt, String bankName) async {
     // Load font before building page
     final arabicFont = await PdfGoogleFonts.cairoRegular();
 
-    final lastUser = await UserDataService.loadLastUserData();
-    final userName = lastUser?['name'] ?? "العميل";
+    // Use the customer name from the receipt instead of loading from storage
+    final userName =
+        receipt.customerName.isNotEmpty ? receipt.customerName : "العميل";
 
     // Generate barcode
     final bc = Barcode.code128();

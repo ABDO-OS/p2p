@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../core/constants.dart';
 import '../../../core/styles/appstyles.dart';
 import '../../../core/widgets/customebottom.dart';
-import '../../entermony/entermony.dart';
-import '../../home/home_page.dart';
+import '../../../core/routes/navigation_service.dart';
+import '../../../core/local_storage/services/user_data_service.dart';
 
 class Choosebankbody extends StatefulWidget {
   final bool firsttime;
@@ -21,6 +21,35 @@ class Choosebankbody extends StatefulWidget {
 
 class _ChoosebankbodyState extends State<Choosebankbody> {
   String? selectedBank;
+  String? customerName;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCustomerName();
+  }
+
+  Future<void> _loadCustomerName() async {
+    try {
+      final lastUser = await UserDataService.loadLastUserData();
+      if (lastUser != null && lastUser['name'] != null) {
+        setState(() {
+          customerName = lastUser['name']!;
+        });
+        print('Choosebankbody: Loaded customer name: $customerName');
+      } else {
+        print('Choosebankbody: No customer name found, using default');
+        setState(() {
+          customerName = 'العميل';
+        });
+      }
+    } catch (e) {
+      print('Choosebankbody: Error loading customer name: $e');
+      setState(() {
+        customerName = 'العميل';
+      });
+    }
+  }
 
   void _onBankSelected(String bankName) {
     setState(() {
@@ -102,25 +131,17 @@ class _ChoosebankbodyState extends State<Choosebankbody> {
           CustomButton(
             text: widget.firsttime ? 'حدد البنك' : 'طباعه وصل الدفع',
             textColor: Colors.white,
-            onTap: () {
+            onTap: () async {
               if (widget.firsttime) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PaymentScreen(),
-                  ),
-                );
+                // Use navigation service instead of direct Navigator
+                await NavigationService.goToPayment();
               } else {
                 if (selectedBank != null) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomePage(
-                        selectedBank: selectedBank!,
-                        amount: widget.amount,
-                        customerName: '',
-                      ),
-                    ),
+                  // Use navigation service instead of direct Navigator
+                  await NavigationService.goToHome(
+                    selectedBank: selectedBank!,
+                    amount: widget.amount,
+                    customerName: customerName ?? 'العميل',
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(

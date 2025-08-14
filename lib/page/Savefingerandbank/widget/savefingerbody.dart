@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../api/local_auth_api.dart';
-import '../../choosebanke/view/choosebankview.dart';
+import '../../../core/routes/navigation_service.dart';
 
 class Savefingerbody extends StatelessWidget {
   const Savefingerbody({super.key});
@@ -28,12 +28,10 @@ class Savefingerbody extends StatelessWidget {
                   print('Final result: $isAuthenticated');
 
                   if (isAuthenticated) {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                          builder: (context) => Choosebankview(
-                                firsttime: true,
-                                amount: '',
-                              )),
+                    // Use navigation service instead of direct Navigator
+                    await NavigationService.replaceWithChooseBank(
+                      firsttime: true,
+                      amount: '',
                     );
                   }
                 },

@@ -12,6 +12,11 @@ class ReceiptDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(
+        'ReceiptDetails: Building with customerName: "${receipt.customerName}"');
+    print('ReceiptDetails: Building with bankName: "${receipt.bankName}"');
+    print('ReceiptDetails: Building with amount: "${receipt.amount}"');
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Container(

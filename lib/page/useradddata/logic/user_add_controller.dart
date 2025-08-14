@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../core/local_storage/services/user_data_service.dart';
 import '../../../core/splash/loading_dialog_widget.dart';
-import '../../Savefingerandbank/view/savefingerview.dart';
+import '../../../core/routes/navigation_service.dart';
 
-class UserAddController {
+class UserAddController extends ChangeNotifier {
   final formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final emailController = TextEditingController();
@@ -11,32 +11,68 @@ class UserAddController {
   final addressController = TextEditingController();
   final ageController = TextEditingController();
 
-  bool isLoading = false;
+  bool _isLoading = false;
   Map<String, dynamic> userStats = {};
 
+  bool get isLoading => _isLoading;
+
   Future<void> initializeData(BuildContext context) async {
-    isLoading = true;
+    print('UserAddController: Starting initialization...');
+    _isLoading = true;
+    notifyListeners();
 
     try {
-      userStats = await UserDataService.getUserStats();
-      final lastUser = await UserDataService.loadLastUserData();
-      if (lastUser != null) {
-        UserDataService.populateControllers(
-          userData: lastUser,
-          nameController: nameController,
-          emailController: emailController,
-          phoneController: phoneController,
-          addressController: addressController,
-          ageController: ageController,
-        );
-      }
-    } catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('حدث خطأ في تحميل البيانات')),
-      );
-    }
+      // Add a simple delay to simulate loading
+      await Future.delayed(const Duration(milliseconds: 500));
 
-    isLoading = false;
+      print('UserAddController: Loading user stats...');
+      try {
+        userStats = await UserDataService.getUserStats();
+        print('UserAddController: User stats loaded: $userStats');
+      } catch (e) {
+        print('UserAddController: Error loading user stats: $e');
+        userStats = {
+          'totalUsers': 0,
+          'hasUsers': false,
+          'lastUser': null,
+          'lastUserName': 'لا يوجد',
+        };
+      }
+
+      print('UserAddController: Loading last user data...');
+      try {
+        final lastUser = await UserDataService.loadLastUserData();
+        print('UserAddController: Last user data: $lastUser');
+
+        if (lastUser != null) {
+          print(
+              'UserAddController: Populating controllers with last user data...');
+          UserDataService.populateControllers(
+            userData: lastUser,
+            nameController: nameController,
+            emailController: emailController,
+            phoneController: phoneController,
+            addressController: addressController,
+            ageController: ageController,
+          );
+          print('UserAddController: Controllers populated successfully');
+        } else {
+          print('UserAddController: No last user data found');
+        }
+      } catch (e) {
+        print('UserAddController: Error loading last user data: $e');
+        // Continue with empty form
+      }
+    } catch (e) {
+      print('UserAddController: General error during initialization: $e');
+      // Don't show error snackbar, just log it and continue
+      print('UserAddController: Continuing with empty form due to error');
+    } finally {
+      print(
+          'UserAddController: Initialization complete, setting loading to false');
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> handleSubmit(BuildContext context) async {
@@ -83,10 +119,8 @@ class UserAddController {
 
       clearForm();
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => Savefingerview()),
-      );
+      // Use navigation service instead of direct Navigator
+      await NavigationService.goToSaveFingerprint();
     } catch (_) {
       LoadingDialog.hide(context);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -105,11 +139,13 @@ class UserAddController {
     );
   }
 
+  @override
   void dispose() {
     nameController.dispose();
     emailController.dispose();
     phoneController.dispose();
     addressController.dispose();
     ageController.dispose();
+    super.dispose();
   }
 }

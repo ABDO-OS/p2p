@@ -30,6 +30,12 @@ class _HomePageState extends State<HomePage> {
 
   void loadReceipt() {
     final now = DateTime.now();
+    print(
+        'HomePage: Loading receipt with customerName: "${widget.customerName}"');
+    print(
+        'HomePage: Loading receipt with selectedBank: "${widget.selectedBank}"');
+    print('HomePage: Loading receipt with amount: "${widget.amount}"');
+
     setState(() {
       receipt = ReceiptModel(
         date:
@@ -44,6 +50,9 @@ class _HomePageState extends State<HomePage> {
         bankName: widget.selectedBank,
       );
     });
+
+    print(
+        'HomePage: Receipt created with customerName: "${receipt!.customerName}"');
   }
 
   @override

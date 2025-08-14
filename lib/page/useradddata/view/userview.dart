@@ -1,5 +1,5 @@
-import 'package:fingerprint_auth_example/page/useradddata/widget/useraddbody.dart';
 import 'package:flutter/material.dart';
+import '../widget/useraddbody.dart';
 
 class Userview extends StatelessWidget {
   const Userview({super.key});
