@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../core/styles/appstyles.dart';
 import '../ReceiptModel/ReceiptModel.dart';
 import 'view/receipt_details.dart';
 

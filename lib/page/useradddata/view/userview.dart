@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/styles/appstyles.dart';
 import '../widget/useraddbody.dart';
 
 class Userview extends StatelessWidget {
@@ -7,8 +8,10 @@ class Userview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Useraddbody(),
-      backgroundColor: Colors.white,
+      body: Center(
+        child: Useraddbody(),
+      ),
+      backgroundColor: AppColors.lightGray,
     );
   }
 }

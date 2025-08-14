@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../api/local_auth_api.dart';
 import '../../core/constants.dart';
 import '../../core/routes/navigation_service.dart';
+import '../../core/widgets/simple_button.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String? customerName;
@@ -37,121 +38,176 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FB),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              // Top bank info
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(width: 8),
-                  Text('أدخل المبلغ',
-                      style: AppTextStyle.bold30.copyWith(color: Colors.blue)),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // Amount display
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      amount,
-                      style: const TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    const Icon(Icons.currency_ruble, size: 28),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 30),
-
-              // Numeric keypad
-              Expanded(
-                child: GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: keys.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
+      body: Container(
+        color: AppColors.lightGray,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.xs),
+            child: Column(
+              children: [
+                // Amount display section
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(AppSpacing.sm),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: AppBorders.medium,
                   ),
-                  itemBuilder: (context, index) {
-                    String key = keys[index];
-                    return GestureDetector(
-                      onTap: () => onKeyTap(key),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
+                  child: Column(
+                    children: [
+                      Text(
+                        'المبلغ المطلوب',
+                        style: AppTextStyle.title.copyWith(
+                          color: AppColors.gray,
                         ),
-                        child: Center(
-                          child: key == 'back'
-                              ? const Icon(Icons.backspace_outlined)
-                              : Text(
-                                  key,
-                                  style: const TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Container(
+                        padding: const EdgeInsets.all(AppSpacing.sm),
+                        decoration: BoxDecoration(
+                          color: AppColors.secondary,
+                          borderRadius: AppBorders.medium,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                amount,
+                                style: AppTextStyle.title.copyWith(
+                                  color: AppColors.white,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                            const SizedBox(width: AppSpacing.xs),
+                            Icon(
+                              Icons.currency_ruble_rounded,
+                              size: 24,
+                              color: AppColors.white,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: AppSpacing.sm),
+
+                // Numeric keypad section
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: AppBorders.medium,
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          'أدخل المبلغ',
+                          style: AppTextStyle.title.copyWith(
+                            color: AppColors.darkGray,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        Expanded(
+                          child: GridView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: keys.length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: AppSpacing.xs,
+                              mainAxisSpacing: AppSpacing.xs,
+                              childAspectRatio: 1.2,
+                            ),
+                            itemBuilder: (context, index) {
+                              String key = keys[index];
+                              return GestureDetector(
+                                onTap: () => onKeyTap(key),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: key == 'back'
+                                        ? AppColors.warning
+                                            .withValues(alpha: 0.1)
+                                        : AppColors.primary
+                                            .withValues(alpha: 0.1),
+                                    borderRadius: AppBorders.small,
+                                    border: Border.all(
+                                      color: key == 'back'
+                                          ? AppColors.warning
+                                              .withValues(alpha: 0.3)
+                                          : AppColors.primary
+                                              .withValues(alpha: 0.3),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: key == 'back'
+                                        ? Icon(
+                                            Icons.backspace_outlined,
+                                            color: AppColors.warning,
+                                            size: 20,
+                                          )
+                                        : Text(
+                                            key,
+                                            style: AppTextStyle.title.copyWith(
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.primary,
+                                            ),
+                                          ),
                                   ),
                                 ),
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-
-              // Pay button
-              SizedBox(
-                width: double.infinity,
-                height: 60,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      ],
                     ),
                   ),
-                  onPressed: () async {
-                    final isAuthenticated = await LocalAuthApi.authenticate();
-                    print('Final result: $isAuthenticated');
+                ),
 
-                    if (isAuthenticated) {
-                      final customerName = widget.customerName ?? 'العميل';
-                      print(
-                          'PaymentScreen: Navigating to choose bank with customer name: $customerName');
+                const SizedBox(height: AppSpacing.sm),
 
-                      // Use navigation service instead of direct Navigator
-                      await NavigationService.replaceWithChooseBank(
-                        firsttime: false,
-                        amount: amount,
-                        customerName: customerName,
-                      );
-                    }
-                  },
-                  icon: const Icon(Icons.fingerprint,
-                      size: 30, color: Colors.white),
-                  label: const Text(
-                    'ادفع',
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+                // Pay button section
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(AppSpacing.sm),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: AppBorders.medium,
+                  ),
+                  child: SimpleButton(
+                    text: 'ادفع',
+                    backgroundColor: AppColors.accent,
+                    onPressed: () async {
+                      final isAuthenticated = await LocalAuthApi.authenticate();
+                      print('Final result: $isAuthenticated');
+
+                      if (isAuthenticated) {
+                        final customerName = widget.customerName ?? 'العميل';
+                        print(
+                            'PaymentScreen: Navigating to choose bank with customer name: $customerName');
+
+                        await NavigationService.replaceWithChooseBank(
+                          firsttime: false,
+                          amount: amount,
+                          customerName: customerName,
+                        );
+                      }
+                    },
+                    icon: Icons.fingerprint_rounded,
+                    width: double.infinity,
+                    height: 50,
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
