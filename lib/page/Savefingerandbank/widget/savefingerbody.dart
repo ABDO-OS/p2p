@@ -3,6 +3,7 @@ import '../../../api/local_auth_api.dart';
 import '../../../core/routes/navigation_service.dart';
 import '../../../core/widgets/simple_button.dart';
 import '../../../core/styles/appstyles.dart';
+import '../../../core/local_storage/services/selected_banks_service.dart';
 
 class Savefingerbody extends StatelessWidget {
   final String? customerName;
@@ -112,6 +113,10 @@ class Savefingerbody extends StatelessWidget {
                           if (isAuthenticated) {
                             print(
                                 'Savefingerbody: Navigating to choose bank with customer name: $customerName');
+                            
+                            // Clear any previous bank selections for fresh start
+                            await SelectedBanksService.clearSelectedBanks();
+                            
                             await NavigationService.replaceWithChooseBank(
                               firsttime: true,
                               amount: '',

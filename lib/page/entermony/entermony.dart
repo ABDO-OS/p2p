@@ -4,6 +4,7 @@ import '../../api/local_auth_api.dart';
 import '../../core/constants.dart';
 import '../../core/routes/navigation_service.dart';
 import '../../core/widgets/simple_button.dart';
+import '../../core/local_storage/services/selected_banks_service.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String? customerName;
@@ -194,6 +195,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         print(
                             'PaymentScreen: Navigating to choose bank with customer name: $customerName');
 
+                        // Save the amount for the next step
+                        // The bank selection will be handled in the choose bank screen
                         await NavigationService.replaceWithChooseBank(
                           firsttime: false,
                           amount: amount,

@@ -4,6 +4,7 @@ import 'user_data_saver.dart';
 import 'user_data_validator.dart';
 import 'user_data_stats.dart';
 import 'user_data_utils.dart';
+import 'selected_banks_service.dart';
 
 class UserDataService {
   // Loader methods
@@ -28,4 +29,16 @@ class UserDataService {
   static final clearControllers = UserDataUtils.clearControllers;
   static final populateControllers = UserDataUtils.populateControllers;
   static final createUserDataMap = UserDataUtils.createUserDataMap;
+
+  // Bank selection methods
+  static final saveSelectedBanks = SelectedBanksService.saveSelectedBanks;
+  static final getSelectedBanks = SelectedBanksService.getSelectedBanks;
+  static final saveLastBankSelection =
+      SelectedBanksService.saveLastBankSelection;
+  static final getLastBankSelection = SelectedBanksService.getLastBankSelection;
+  static final hasSelectedBanks = SelectedBanksService.hasSelectedBanks;
+  static final clearSelectedBanks = SelectedBanksService.clearSelectedBanks;
+  static final addBankToSelection = SelectedBanksService.addBankToSelection;
+  static final removeBankFromSelection =
+      SelectedBanksService.removeBankFromSelection;
 }

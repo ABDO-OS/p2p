@@ -3,6 +3,7 @@ import '../../../core/constants.dart';
 import '../../../core/styles/appstyles.dart';
 import '../../../core/widgets/simple_button.dart';
 import '../../../core/routes/navigation_service.dart';
+import '../../../core/local_storage/services/selected_banks_service.dart';
 
 class Choosebankbody extends StatefulWidget {
   final bool firsttime;
@@ -21,17 +22,127 @@ class Choosebankbody extends StatefulWidget {
 }
 
 class _ChoosebankbodyState extends State<Choosebankbody> {
-  String? selectedBank;
+  List<String> selectedBanks = [];
+  List<String> availableBanks = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeBanks();
+  }
+
+  Future<void> _initializeBanks() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      if (widget.firsttime) {
+        // First time: show all banks, user can select multiple
+        availableBanks = banks.map((bank) => bank['name']!).toList();
+        selectedBanks = [];
+      } else {
+        // Second time: show only previously selected banks
+        final savedBanks = await SelectedBanksService.getSelectedBanks();
+        if (savedBanks.isNotEmpty) {
+          availableBanks = savedBanks;
+          selectedBanks = [
+            savedBanks.first
+          ]; // Default to first bank for payment
+        } else {
+          // Fallback to all banks if no saved selection
+          availableBanks = banks.map((bank) => bank['name']!).toList();
+          selectedBanks = [];
+        }
+      }
+    } catch (e) {
+      print('Error initializing banks: $e');
+      // Fallback to all banks
+      availableBanks = banks.map((bank) => bank['name']!).toList();
+      selectedBanks = [];
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   void _onBankSelected(String bankName) {
     setState(() {
-      selectedBank = bankName;
+      if (widget.firsttime) {
+        // First time: toggle selection (multiple banks allowed)
+        if (selectedBanks.contains(bankName)) {
+          selectedBanks.remove(bankName);
+        } else {
+          selectedBanks.add(bankName);
+        }
+      } else {
+        // Second time: single selection for payment
+        selectedBanks = [bankName];
+      }
     });
-    print('Selected bank: $bankName');
+    print('Selected banks: $selectedBanks');
+  }
+
+  bool _isBankSelected(String bankName) {
+    return selectedBanks.contains(bankName);
+  }
+
+  Future<void> _handleContinue() async {
+    if (selectedBanks.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            widget.firsttime
+                ? "يرجى اختيار بنك واحد على الأقل"
+                : "يرجى اختيار البنك",
+            style: AppTextStyle.body.copyWith(
+              color: AppColors.white,
+            ),
+          ),
+          backgroundColor: AppColors.warning,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    if (widget.firsttime) {
+      // Save selected banks for future use
+      await SelectedBanksService.saveSelectedBanks(selectedBanks);
+      print('Choosebankbody: Saved selected banks: $selectedBanks');
+
+      // Navigate to payment
+      await NavigationService.goToPayment(
+        customerName: widget.customerName,
+      );
+    } else {
+      // Navigate to home with selected bank
+      final selectedBank = selectedBanks.first;
+      final customerName = widget.customerName ?? 'العميل';
+      print(
+          'Choosebankbody: Navigating to home with bank: $selectedBank, customer: $customerName');
+
+      await NavigationService.goToHome(
+        selectedBank: selectedBank,
+        amount: widget.amount,
+        customerName: customerName,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Container(
+        color: AppColors.lightGray,
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Container(
       color: AppColors.lightGray,
       child: SafeArea(
@@ -56,7 +167,9 @@ class _ChoosebankbodyState extends State<Choosebankbody> {
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      'اختر البنك',
+                      widget.firsttime
+                          ? 'اختر البنوك المفضلة'
+                          : 'اختر البنك للدفع',
                       style: AppTextStyle.title.copyWith(
                         color: AppColors.white,
                       ),
@@ -82,6 +195,16 @@ class _ChoosebankbodyState extends State<Choosebankbody> {
                         ),
                       ),
                     ],
+                    if (widget.firsttime) ...[
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        'يمكنك اختيار أكثر من بنك',
+                        style: AppTextStyle.small.copyWith(
+                          color: AppColors.white.withValues(alpha: 0.9),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -92,7 +215,7 @@ class _ChoosebankbodyState extends State<Choosebankbody> {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(AppSpacing.sm),
+                  // padding: const EdgeInsets.all(AppSpacing.),
                   decoration: BoxDecoration(
                     color: AppColors.white,
                     borderRadius: AppBorders.medium,
@@ -100,12 +223,24 @@ class _ChoosebankbodyState extends State<Choosebankbody> {
                   child: Column(
                     children: [
                       Text(
-                        'اختر البنك المفضل لديك',
+                        widget.firsttime
+                            ? 'اختر البنوك المفضلة لديك'
+                            : 'اختر البنك للدفع',
                         style: AppTextStyle.title.copyWith(
                           color: AppColors.darkGray,
                         ),
                         textAlign: TextAlign.center,
                       ),
+                      if (widget.firsttime) ...[
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          'المحدد: ${selectedBanks.length}',
+                          style: AppTextStyle.small.copyWith(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: AppSpacing.sm),
                       Expanded(
                         child: GridView.builder(
@@ -118,13 +253,17 @@ class _ChoosebankbodyState extends State<Choosebankbody> {
                             crossAxisSpacing: AppSpacing.xs,
                             mainAxisSpacing: AppSpacing.xs,
                           ),
-                          itemCount: banks.length,
+                          itemCount: availableBanks.length,
                           itemBuilder: (context, index) {
-                            final bank = banks[index];
-                            final isSelected = selectedBank == bank['name'];
+                            final bankName = availableBanks[index];
+                            final bankData = banks.firstWhere(
+                              (bank) => bank['name'] == bankName,
+                              orElse: () => {'image': '', 'name': bankName},
+                            );
+                            final isSelected = _isBankSelected(bankName);
 
                             return GestureDetector(
-                              onTap: () => _onBankSelected(bank['name']!),
+                              onTap: () => _onBankSelected(bankName),
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: isSelected
@@ -149,15 +288,23 @@ class _ChoosebankbodyState extends State<Choosebankbody> {
                                         borderRadius: AppBorders.small,
                                       ),
                                       child: Image.asset(
-                                        bank['image']!,
+                                        bankData['image']!,
                                         width: 30,
                                         height: 30,
                                         fit: BoxFit.contain,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Icon(
+                                            Icons.account_balance,
+                                            size: 30,
+                                            color: AppColors.gray,
+                                          );
+                                        },
                                       ),
                                     ),
                                     const SizedBox(height: AppSpacing.xs),
                                     Text(
-                                      bank['name']!,
+                                      bankName,
                                       style: AppTextStyle.small.copyWith(
                                         fontWeight: isSelected
                                             ? FontWeight.w600
@@ -170,6 +317,14 @@ class _ChoosebankbodyState extends State<Choosebankbody> {
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),
+                                    if (widget.firsttime && isSelected) ...[
+                                      const SizedBox(height: AppSpacing.xs),
+                                      Icon(
+                                        Icons.check_circle,
+                                        color: AppColors.primary,
+                                        size: 16,
+                                      ),
+                                    ],
                                   ],
                                 ),
                               ),
@@ -193,43 +348,13 @@ class _ChoosebankbodyState extends State<Choosebankbody> {
                   borderRadius: AppBorders.medium,
                 ),
                 child: SimpleButton(
-                  text: widget.firsttime ? 'حدد البنك' : 'طباعة وصل الدفع',
+                  text: widget.firsttime
+                      ? 'حفظ البنوك المفضلة'
+                      : 'طباعة وصل الدفع',
                   backgroundColor: AppColors.secondary,
-                  onPressed: () async {
-                    if (widget.firsttime) {
-                      print(
-                          'Choosebankbody: Navigating to payment with customer name: ${widget.customerName}');
-                      await NavigationService.goToPayment(
-                          customerName: widget.customerName);
-                    } else {
-                      if (selectedBank != null) {
-                        final customerName = widget.customerName ?? 'العميل';
-                        print(
-                            'Choosebankbody: Navigating to home with customer name: $customerName');
-
-                        await NavigationService.goToHome(
-                          selectedBank: selectedBank!,
-                          amount: widget.amount,
-                          customerName: customerName,
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              "يرجى اختيار البنك",
-                              style: AppTextStyle.body.copyWith(
-                                color: AppColors.white,
-                              ),
-                            ),
-                            backgroundColor: AppColors.warning,
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      }
-                    }
-                  },
+                  onPressed: _handleContinue,
                   icon: widget.firsttime
-                      ? Icons.arrow_forward_rounded
+                      ? Icons.save_rounded
                       : Icons.print_rounded,
                   width: double.infinity,
                   height: 50,
