@@ -25,8 +25,11 @@ class RouteGenerator {
         );
 
       case AppRoutes.saveFingerprint:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final customerName = args?['customerName'];
+
         return MaterialPageRoute(
-          builder: (_) => const Savefingerview(),
+          builder: (_) => Savefingerview(customerName: customerName),
           settings: settings,
         );
 
@@ -34,18 +37,23 @@ class RouteGenerator {
         final args = settings.arguments as Map<String, dynamic>?;
         final firsttime = args?['firsttime'] ?? false;
         final amount = args?['amount'] ?? '';
+        final customerName = args?['customerName'];
 
         return MaterialPageRoute(
           builder: (_) => Choosebankview(
             firsttime: firsttime,
             amount: amount,
+            customerName: customerName,
           ),
           settings: settings,
         );
 
       case AppRoutes.payment:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final customerName = args?['customerName'];
+
         return MaterialPageRoute(
-          builder: (_) => const PaymentScreen(),
+          builder: (_) => PaymentScreen(customerName: customerName),
           settings: settings,
         );
 

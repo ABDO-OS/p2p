@@ -5,7 +5,9 @@ import '../../core/constants.dart';
 import '../../core/routes/navigation_service.dart';
 
 class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({super.key});
+  final String? customerName;
+
+  const PaymentScreen({super.key, this.customerName});
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -129,10 +131,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     print('Final result: $isAuthenticated');
 
                     if (isAuthenticated) {
+                      final customerName = widget.customerName ?? 'العميل';
+                      print(
+                          'PaymentScreen: Navigating to choose bank with customer name: $customerName');
+
                       // Use navigation service instead of direct Navigator
                       await NavigationService.replaceWithChooseBank(
                         firsttime: false,
                         amount: amount,
+                        customerName: customerName,
                       );
                     }
                   },

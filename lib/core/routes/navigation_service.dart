@@ -50,25 +50,33 @@ class NavigationService {
     await pushNamed(AppRoutes.userData);
   }
 
-  static Future<void> goToSaveFingerprint() async {
-    await pushNamed(AppRoutes.saveFingerprint);
+  static Future<void> goToSaveFingerprint({String? customerName}) async {
+    await pushNamed(
+      AppRoutes.saveFingerprint,
+      arguments: customerName != null ? {'customerName': customerName} : null,
+    );
   }
 
   static Future<void> goToChooseBank({
     required bool firsttime,
     required String amount,
+    String? customerName,
   }) async {
     await pushNamed(
       AppRoutes.chooseBank,
       arguments: {
         'firsttime': firsttime,
         'amount': amount,
+        'customerName': customerName,
       },
     );
   }
 
-  static Future<void> goToPayment() async {
-    await pushNamed(AppRoutes.payment);
+  static Future<void> goToPayment({String? customerName}) async {
+    await pushNamed(
+      AppRoutes.payment,
+      arguments: customerName != null ? {'customerName': customerName} : null,
+    );
   }
 
   static Future<void> goToHome({
@@ -95,19 +103,24 @@ class NavigationService {
     await pushReplacementNamed(AppRoutes.userData);
   }
 
-  static Future<void> replaceWithSaveFingerprint() async {
-    await pushReplacementNamed(AppRoutes.saveFingerprint);
+  static Future<void> replaceWithSaveFingerprint({String? customerName}) async {
+    await pushReplacementNamed(
+      AppRoutes.saveFingerprint,
+      arguments: customerName != null ? {'customerName': customerName} : null,
+    );
   }
 
   static Future<void> replaceWithChooseBank({
     required bool firsttime,
     required String amount,
+    String? customerName,
   }) async {
     await pushReplacementNamed(
       AppRoutes.chooseBank,
       arguments: {
         'firsttime': firsttime,
         'amount': amount,
+        'customerName': customerName,
       },
     );
   }

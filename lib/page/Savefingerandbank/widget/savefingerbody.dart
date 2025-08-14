@@ -3,7 +3,9 @@ import '../../../api/local_auth_api.dart';
 import '../../../core/routes/navigation_service.dart';
 
 class Savefingerbody extends StatelessWidget {
-  const Savefingerbody({super.key});
+  final String? customerName;
+
+  const Savefingerbody({super.key, this.customerName});
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +30,13 @@ class Savefingerbody extends StatelessWidget {
                   print('Final result: $isAuthenticated');
 
                   if (isAuthenticated) {
+                    print(
+                        'Savefingerbody: Navigating to choose bank with customer name: $customerName');
                     // Use navigation service instead of direct Navigator
                     await NavigationService.replaceWithChooseBank(
                       firsttime: true,
                       amount: '',
+                      customerName: customerName,
                     );
                   }
                 },

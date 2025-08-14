@@ -119,8 +119,13 @@ class UserAddController extends ChangeNotifier {
 
       clearForm();
 
+      // Pass the user's name through navigation to ensure it's available
+      final customerName = userData['name']!;
+      print(
+          'UserAddController: Navigating to save fingerprint with customer name: $customerName');
+
       // Use navigation service instead of direct Navigator
-      await NavigationService.goToSaveFingerprint();
+      await NavigationService.goToSaveFingerprint(customerName: customerName);
     } catch (_) {
       LoadingDialog.hide(context);
       ScaffoldMessenger.of(context).showSnackBar(

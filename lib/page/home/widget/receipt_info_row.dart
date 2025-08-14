@@ -15,8 +15,6 @@ class ReceiptInfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('ReceiptInfoRow: Building with label: "$label", value: "$value"');
-
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(

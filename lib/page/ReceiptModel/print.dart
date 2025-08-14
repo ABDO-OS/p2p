@@ -20,7 +20,7 @@ Future<void> printReceipt(ReceiptModel receipt, String bankName) async {
 
     // Generate barcode
     final bc = Barcode.code128();
-    final svgBarcode = bc.toSvg(receipt.approvalCode, width: 200, height: 100);
+    final svgBarcode = bc.toSvg(receipt.approvalCode, width: 230, height: 130);
 
     pdf.addPage(
       pw.Page(

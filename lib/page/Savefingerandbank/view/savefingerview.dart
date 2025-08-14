@@ -2,12 +2,14 @@ import 'package:fingerprint_auth_example/page/Savefingerandbank/widget/savefinge
 import 'package:flutter/material.dart';
 
 class Savefingerview extends StatelessWidget {
-  const Savefingerview({super.key});
+  final String? customerName;
+
+  const Savefingerview({super.key, this.customerName});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Savefingerbody(),
+      body: Savefingerbody(customerName: customerName),
     );
   }
 }

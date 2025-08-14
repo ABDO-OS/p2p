@@ -3,16 +3,17 @@ import '../../../core/constants.dart';
 import '../../../core/styles/appstyles.dart';
 import '../../../core/widgets/customebottom.dart';
 import '../../../core/routes/navigation_service.dart';
-import '../../../core/local_storage/services/user_data_service.dart';
 
 class Choosebankbody extends StatefulWidget {
   final bool firsttime;
   final String amount;
+  final String? customerName;
 
   Choosebankbody({
     super.key,
     required this.firsttime,
     required this.amount,
+    this.customerName,
   });
 
   @override
@@ -21,35 +22,6 @@ class Choosebankbody extends StatefulWidget {
 
 class _ChoosebankbodyState extends State<Choosebankbody> {
   String? selectedBank;
-  String? customerName;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadCustomerName();
-  }
-
-  Future<void> _loadCustomerName() async {
-    try {
-      final lastUser = await UserDataService.loadLastUserData();
-      if (lastUser != null && lastUser['name'] != null) {
-        setState(() {
-          customerName = lastUser['name']!;
-        });
-        print('Choosebankbody: Loaded customer name: $customerName');
-      } else {
-        print('Choosebankbody: No customer name found, using default');
-        setState(() {
-          customerName = 'العميل';
-        });
-      }
-    } catch (e) {
-      print('Choosebankbody: Error loading customer name: $e');
-      setState(() {
-        customerName = 'العميل';
-      });
-    }
-  }
 
   void _onBankSelected(String bankName) {
     setState(() {
@@ -133,15 +105,22 @@ class _ChoosebankbodyState extends State<Choosebankbody> {
             textColor: Colors.white,
             onTap: () async {
               if (widget.firsttime) {
+                print(
+                    'Choosebankbody: Navigating to payment with customer name: ${widget.customerName}');
                 // Use navigation service instead of direct Navigator
-                await NavigationService.goToPayment();
+                await NavigationService.goToPayment(
+                    customerName: widget.customerName);
               } else {
                 if (selectedBank != null) {
+                  final customerName = widget.customerName ?? 'العميل';
+                  print(
+                      'Choosebankbody: Navigating to home with customer name: $customerName');
+
                   // Use navigation service instead of direct Navigator
                   await NavigationService.goToHome(
                     selectedBank: selectedBank!,
                     amount: widget.amount,
-                    customerName: customerName ?? 'العميل',
+                    customerName: customerName,
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
